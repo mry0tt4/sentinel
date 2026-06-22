@@ -1,0 +1,11 @@
+[package]
+name = "sentinel_adapters"
+edition = "2024.beta"
+# Market-type abstraction / adapter interface deployed to Sui Testnet ONLY.
+# Mainnet is disabled for the Sui Overflow 2026 submission.
+
+[dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
+
+[addresses]
+sentinel_adapters = "0x0"

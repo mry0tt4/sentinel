@@ -1,0 +1,86 @@
+# =============================================================================
+# Sentinel — PRODUCTION stack for a single VM (e.g. Oracle Always Free).
+# Runs Postgres + Redis + the backend + a Caddy reverse proxy (auto-HTTPS).
+# The frontend is deployed separately on Vercel and talks to this backend over
+# HTTPS/WSS via your SENTINEL_DOMAIN.
+#
+# Usage on the VM:
+#   export SENTINEL_DOMAIN=sentinel-api.duckdns.org   # your backend domain
+#   docker compose -f docker-compose.prod.yml up -d --build
+#   docker compose -f docker-compose.prod.yml exec backend node dist/db/migrate.js
+#   docker compose -f docker-compose.prod.yml exec backend node dist/db/seed.js
+# =============================================================================
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sentinel-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sentinel
+      POSTGRES_PASSWORD: sentinel
+      POSTGRES_DB: sentinel
+    volumes:
+      - sentinel_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U sentinel -d sentinel']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: sentinel-redis
+    restart: unless-stopped
+    volumes:
+      - sentinel_redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: sentinel-backend
+    restart: unless-stopped
+    # Secrets + chain config come from the repo-root .env you create on the VM
+    # (AGENT_SIGNER_KEY, LLM_API_KEY, SUI_RPC_URL, SENTINEL_*_PACKAGE_ID,
+    # WALRUS_*, DEMO_* ids). The datastore URLs below override whatever .env
+    # says so they always point at the in-network service containers.
+    env_file:
+      - ./.env
+    environment:
+      NODE_ENV: production
+      PORT: '4000'
+      DATABASE_URL: postgresql://sentinel:sentinel@postgres:5432/sentinel
+      REDIS_URL: redis://redis:6379
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  caddy:
+    image: caddy:2-alpine
+    container_name: sentinel-caddy
+    restart: unless-stopped
+    ports:
+      - '80:80'
+      - '443:443'
+    environment:
+      SENTINEL_DOMAIN: ${SENTINEL_DOMAIN}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - backend
+
+volumes:
+  sentinel_pg_data:
+  sentinel_redis_data:
+  caddy_data:
+  caddy_config:

@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+.astro/
+*.tsbuildinfo
+
+# Environment & secrets (Req 16.3 - never commit real secrets)
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+npm-debug.log*
+
+# Move build artifacts
+move/**/build/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+
+# Excluded from the public submission repo (per request)
+sentinel-explainer/
+/DEMO_SCRIPT.md

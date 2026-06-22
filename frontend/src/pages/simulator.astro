@@ -1,0 +1,458 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { AppShell } from '../components/AppShell';
+---
+
+<BaseLayout title="Simulation Lab — Sentinel">
+  <AppShell client:only="react" page="simulator" currentPath="/simulator" />
+
+  <style>
+    /* All simulator styles are scoped to this page via the `.simulator` root. */
+    :global(.simulator__header) {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    :global(.simulator__layout) {
+      display: grid;
+      grid-template-columns: minmax(220px, 320px) 1fr;
+      gap: 1.5rem;
+      align-items: start;
+    }
+    @media (max-width: 760px) {
+      :global(.simulator__layout) {
+        grid-template-columns: 1fr;
+      }
+    }
+    :global(.simulator__error) {
+      color: var(--danger);
+      font-weight: 500;
+    }
+
+    /* Plain-English explainer of what the lab is for */
+    :global(.simulator__intro) {
+      margin-bottom: 1.25rem;
+      padding: 1.25rem 1.4rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow-sm);
+    }
+    :global(.simulator__intro-title) {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+    :global(.simulator__intro-lede) {
+      margin: 0.45rem 0 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.6;
+      max-width: 70ch;
+    }
+    :global(.simulator__intro-lede strong) {
+      color: var(--fg-soft);
+      font-weight: 500;
+    }
+    :global(.simulator__intro-steps) {
+      list-style: none;
+      margin: 1rem 0 0;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.6rem;
+    }
+    @media (max-width: 720px) {
+      :global(.simulator__intro-steps) {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    :global(.simulator__intro-steps li) {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--fg-soft);
+      padding: 0.5rem 0.65rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+    }
+    :global(.simulator__intro-steps li span) {
+      display: grid;
+      place-items: center;
+      width: 20px;
+      height: 20px;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background: rgba(79, 70, 229, 0.1);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: 500;
+    }
+    :global(.simulator__intro-note) {
+      margin: 0.85rem 0 0;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Column headings aligned across both columns (left cards ↔ right content) */
+    :global(.scenario-picker__heading),
+    :global(.simulator__main-head) {
+      margin: 0 0 0.85rem;
+      font-size: 1.05rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+
+    /* Selected-scenario info shown in the runner's idle state */
+    :global(.runner-scenario__desc) {
+      margin: 0;
+      color: var(--fg-soft);
+      font-size: 0.95rem;
+      line-height: 1.55;
+    }
+    :global(.runner-scenario__what) {
+      margin: 0.9rem 0 0;
+      padding-left: 1.1rem;
+      display: grid;
+      gap: 0.4rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    :global(.runner-scenario__cta) {
+      margin: 1rem 0 0;
+      font-size: 0.9rem;
+      color: var(--fg-soft);
+    }
+    :global(.runner-scenario__cta strong) {
+      color: var(--fg);
+      font-weight: 500;
+    }
+    :global(.simulator-runner__idle) {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    /* Override console: explanation + per-operation help */
+    :global(.override-controls__heading) {
+      margin: 0 0 0.5rem;
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+    :global(.override-controls__intro) {
+      margin: 0 0 1rem;
+      color: var(--muted);
+      font-size: 0.86rem;
+      line-height: 1.55;
+    }
+    :global(.override-controls__op-help) {
+      margin: 0.4rem 0 0.75rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    /* Live risk-score timeline chart */
+    :global(.sim-timeline-wrap) {
+      margin: 1rem 0 0.5rem;
+      padding: 0.85rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface-2);
+    }
+    :global(.sim-timeline__title) {
+      display: block;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    :global(.sim-timeline) {
+      width: 100%;
+      height: 130px;
+      display: block;
+    }
+
+    /* "Why this score" reasoning panel */
+    :global(.score-why) {
+      margin: 0.75rem 0 1rem;
+      padding: 0.9rem 1rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+    }
+    :global(.score-why__headline) {
+      margin: 0 0 0.6rem;
+      font-size: 0.9rem;
+      color: var(--fg);
+      line-height: 1.5;
+    }
+    :global(.score-why__list) {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 0.4rem;
+    }
+    :global(.score-why__item) {
+      display: flex;
+      gap: 0.6rem;
+      align-items: baseline;
+      font-size: 0.82rem;
+      padding: 0.35rem 0.55rem;
+      border-radius: 8px;
+      border-left: 3px solid var(--border-strong);
+      background: var(--surface-2);
+    }
+    :global(.score-why__item--high) {
+      border-left-color: var(--danger);
+      background: rgba(220, 38, 38, 0.06);
+    }
+    :global(.score-why__item--medium) {
+      border-left-color: var(--warn);
+      background: rgba(217, 119, 6, 0.06);
+    }
+    :global(.score-why__item--ok) {
+      border-left-color: var(--ok);
+      background: rgba(5, 150, 105, 0.06);
+    }
+    :global(.score-why__factor) {
+      flex: 0 0 auto;
+      font-weight: 500;
+      color: var(--fg);
+      min-width: 9rem;
+    }
+    :global(.score-why__detail) {
+      color: var(--muted);
+      line-height: 1.45;
+    }
+    @media (max-width: 560px) {
+      :global(.score-why__item) { flex-direction: column; gap: 0.15rem; }
+      :global(.score-why__factor) { min-width: 0; }
+    }
+
+    /* Scenario picker */
+    :global(.scenario-picker__list) {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 0.5rem;
+    }
+    :global(.scenario-picker__item) {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      width: 100%;
+      text-align: left;
+      padding: 0.6rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface);
+      color: var(--fg);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    :global(.scenario-picker__item:hover) {
+      border-color: var(--border-strong);
+    }
+    :global(.scenario-picker__item--selected) {
+      border-color: var(--accent);
+      background: rgba(79, 70, 229, 0.06);
+    }
+    :global(.scenario-picker__item:disabled) {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    :global(.scenario-picker__title) {
+      font-weight: 500;
+    }
+    :global(.scenario-picker__desc) {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    :global(.scenario-picker__actions) {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.75rem;
+    }
+    :global(.scenario-picker__reset) {
+      padding: 0.6rem 1.1rem;
+      border-radius: 10px;
+      border: 1px solid var(--border-strong);
+      background: var(--surface);
+      color: var(--fg);
+      font: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    :global(.scenario-picker__reset:hover:not(:disabled)) {
+      background: var(--surface-2);
+    }
+    :global(.scenario-picker__start),
+    :global(.override-controls__submit) {
+      padding: 0.6rem 1.1rem;
+      border-radius: 10px;
+      border: 1px solid var(--purple-edge);
+      background: var(--purple);
+      color: #fff;
+      font: inherit;
+      font-weight: 500;
+      cursor: pointer;
+      text-shadow: 0 1px 1px rgba(40, 28, 110, 0.45);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        inset 0 2px 3px rgba(255, 255, 255, 0.18),
+        inset 0 -6px 12px rgba(40, 28, 110, 0.5),
+        inset 0 -1px 0 rgba(40, 28, 110, 0.6);
+      transition: background 0.15s ease, transform 0.12s ease;
+    }
+    :global(.scenario-picker__start:hover:not(:disabled)),
+    :global(.override-controls__submit:hover:not(:disabled)) {
+      background: var(--purple-hi);
+    }
+    :global(.scenario-picker__start:disabled),
+    :global(.override-controls__submit:disabled) {
+      opacity: 0.5;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    /* Runner */
+    :global(.simulator-runner) {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.25rem;
+      box-shadow: var(--shadow);
+    }
+    :global(.simulator-runner__header) {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+    }
+    :global(.simulator-runner__progress) {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    :global(.simulator-runner__score) {
+      display: flex;
+      align-items: center;
+      gap: 1.25rem;
+      margin: 0.75rem 0 1rem;
+    }
+    :global(.simulator-runner__score-meta) {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    :global(.simulator-runner__score-band) {
+      font-size: 1.25rem;
+      font-weight: 500;
+      letter-spacing: -0.01em;
+    }
+    :global(.simulator-runner__band-meaning) {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.5;
+      max-width: 42ch;
+    }
+    :global(.simulator-runner__score-value) {
+      font-size: 3rem;
+      font-weight: 500;
+      line-height: 1;
+    }
+    :global(.simulator-runner__data) {
+      display: grid;
+      gap: 0.35rem;
+    }
+    :global(.labeled-datum) {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    :global(.labeled-datum__value) {
+      font-variant-numeric: tabular-nums;
+      font-family: var(--mono);
+      color: var(--fg-soft);
+    }
+    :global(.simulator-runner__blocked),
+    :global(.override-controls__error) {
+      color: var(--warn);
+      font-weight: 500;
+    }
+
+    /* Data-source badges */
+    :global(.source-badge) {
+      font-size: 0.7rem;
+      font-weight: 500;
+      padding: 0.12rem 0.5rem;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+    :global(.source-badge--live) {
+      background: rgba(5, 150, 105, 0.12);
+      color: var(--ok);
+    }
+    :global(.source-badge--simulated) {
+      background: rgba(99, 102, 241, 0.12);
+      color: var(--accent);
+    }
+    :global(.source-badge--testnet-tx) {
+      background: rgba(8, 145, 178, 0.12);
+      color: #0e7490;
+    }
+    :global(.source-badge--walrus) {
+      background: rgba(217, 119, 6, 0.14);
+      color: var(--warn);
+    }
+
+    /* Override controls */
+    :global(.override-controls) {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+    }
+    :global(.override-controls__field) {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-bottom: 0.75rem;
+    }
+    :global(.override-controls__field select),
+    :global(.override-controls__field textarea) {
+      padding: 0.5rem 0.6rem;
+      border: 1px solid var(--border-strong);
+      border-radius: 10px;
+      background: var(--input-bg);
+      color: var(--fg);
+      font: inherit;
+    }
+    :global(.override-controls__reason-hint) {
+      color: var(--muted);
+      font-size: 0.8rem;
+      margin: 0 0 0.5rem;
+    }
+    :global(.tx-digest) {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      word-break: break-all;
+    }
+    :global(.tx-digest--blocked) {
+      color: var(--warn);
+    }
+  </style>
+</BaseLayout>

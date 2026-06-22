@@ -1,0 +1,10 @@
+# Sentinel backend reverse proxy.
+# Caddy terminates HTTPS for your backend domain (free Let's Encrypt cert,
+# auto-renewed) and forwards everything — including the /ws WebSocket upgrade —
+# to the backend container. The domain comes from the SENTINEL_DOMAIN env var
+# (set it in docker-compose.prod.yml or your shell).
+
+{$SENTINEL_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy backend:4000
+}

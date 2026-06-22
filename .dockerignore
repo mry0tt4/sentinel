@@ -1,0 +1,16 @@
+# Keep the backend build context small: only tsconfig.base.json + backend/ are
+# needed. Everything below is excluded from the Docker build context.
+**/node_modules
+**/dist
+**/.tsbuildinfo
+.git
+.vercel
+.astro
+frontend
+move
+sentinel-explainer
+deployments
+*.log
+.DS_Store
+.env
+.env.*

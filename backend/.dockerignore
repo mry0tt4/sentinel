@@ -1,0 +1,7 @@
+node_modules
+dist
+*.test.ts
+**/*.test.ts
+**/*.property.test.ts
+.env
+.env.*

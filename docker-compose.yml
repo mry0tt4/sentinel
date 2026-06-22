@@ -1,0 +1,50 @@
+# =============================================================================
+# Sentinel Risk Guardian - local datastores
+# Postgres + Redis for backend config, time-series snapshots, cache/queue.
+# Values match the defaults in .env.example:
+#   DATABASE_URL=postgresql://sentinel:sentinel@localhost:5434/sentinel
+#   REDIS_URL=redis://localhost:6379
+#
+# Usage:
+#   docker compose up -d        # start
+#   docker compose down         # stop (keeps data volume)
+#   docker compose down -v      # stop + wipe data
+# =============================================================================
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: sentinel-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: sentinel
+      POSTGRES_PASSWORD: sentinel
+      POSTGRES_DB: sentinel
+    # Host 5434 -> container 5432 (avoids clashing with a local Postgres on 5432).
+    ports:
+      - '5434:5432'
+    volumes:
+      - sentinel_pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U sentinel -d sentinel']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: sentinel-redis
+    restart: unless-stopped
+    ports:
+      - '6379:6379'
+    volumes:
+      - sentinel_redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  sentinel_pg_data:
+  sentinel_redis_data:

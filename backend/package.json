@@ -1,0 +1,39 @@
+{
+  "name": "@sentinel/backend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Sentinel backend: Express + TypeScript API gateway, background workers, and WebSocket server (Sui Testnet only).",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx watch --env-file-if-exists=../.env src/index.ts",
+    "start": "node --env-file-if-exists=../.env dist/index.js",
+    "migrate": "tsx --env-file-if-exists=../.env src/db/migrate.ts",
+    "seed": "tsx --env-file-if-exists=../.env src/db/seed.ts",
+    "provision": "tsx --env-file-if-exists=../.env src/demo/provision.ts",
+    "reset-cooldown": "tsx --env-file-if-exists=../.env src/demo/resetCooldown.ts",
+    "seed-markets": "tsx --env-file-if-exists=../.env src/demo/seedExtraMarkets.ts",
+    "lint": "eslint . --ext .ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "@mysten/sui": "^1.14.0",
+    "express": "^4.19.2",
+    "ioredis": "^5.11.1",
+    "pg": "^8.22.0",
+    "ws": "^8.21.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.14.0",
+    "@types/pg": "^8.20.0",
+    "@types/supertest": "^7.2.0",
+    "@types/ws": "^8.18.1",
+    "fast-check": "^3.19.0",
+    "supertest": "^7.2.2",
+    "tsx": "^4.16.0",
+    "vitest": "^2.0.0"
+  }
+}

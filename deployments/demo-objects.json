@@ -1,0 +1,11 @@
+{
+  "network": "testnet",
+  "provisionedAt": "2026-06-20T17:55:56.744Z",
+  "agent": "0xa054daa9e6db27e623f377f17b0702222f2b54b9ef76d16ca02cf3dec189d4b4",
+  "marketStateId": "0x95120424738ae3f9f159bfeafea4e6a11e462463b2b831255d1284e5c3606d12",
+  "policyId": "0x81591e148e9a257bd175b696339eba97008fa0762b9132b6320dc1876dba8387",
+  "guardianCapId": "0x21e7bf5b5989422f9a37c766735619a6c389cfbed879a795cc9ba91617ab4706",
+  "overrideCapId": "0x72b45229d9481a87f5e82049b2a789b52dda4fcbb6cc4396e99cfb715cc2bf39",
+  "initMarketTx": "Htm3pspJu2CaReVZoFaUowkG1VwQYAkm95JXwNPi6w1h",
+  "createPolicyTx": "Cead6Wreo29hh4HRY3yB6gokfoUf81pMjYE7wGXeUvQS"
+}

@@ -1,0 +1,14 @@
+[package]
+name = "sentinel_policy"
+edition = "2024.beta"
+# The trust root: RiskPolicy, GuardianCap, OverrideCap, ActionLog.
+# Deployed to Sui Testnet ONLY. Mainnet is disabled for the
+# Sui Overflow 2026 submission.
+
+[dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
+sentinel_demo_market = { local = "../sentinel_demo_market" }
+sentinel_adapters = { local = "../sentinel_adapters" }
+
+[addresses]
+sentinel_policy = "0x0"

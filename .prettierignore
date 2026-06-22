@@ -1,0 +1,6 @@
+node_modules
+dist
+build
+.astro
+move/**/build
+package-lock.json

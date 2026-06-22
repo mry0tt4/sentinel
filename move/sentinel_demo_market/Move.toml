@@ -1,0 +1,12 @@
+[package]
+name = "sentinel_demo_market"
+edition = "2024.beta"
+# Controllable simulated lending market deployed to Sui Testnet ONLY.
+# Mainnet is disabled for the Sui Overflow 2026 submission.
+
+[dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet" }
+sentinel_adapters = { local = "../sentinel_adapters" }
+
+[addresses]
+sentinel_demo_market = "0x0"

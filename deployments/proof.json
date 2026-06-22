@@ -1,0 +1,74 @@
+{
+  "network": "sui:testnet",
+  "suiRpcUrl": "https://fullnode.testnet.sui.io:443",
+  "walrusAggregatorUrl": "https://aggregator.walrus-testnet.walrus.space",
+  "explorerTxBase": "https://suiscan.xyz/testnet/tx",
+  "explorerObjectBase": "https://suiscan.xyz/testnet/object",
+  "packageId": "0xacc43943d51e0bdf43f8a0ea471fd1bb8c4ecaab6df1b9c3a5cab5bbcbea82e7",
+  "agentAddress": "0xa054daa9e6db27e623f377f17b0702222f2b54b9ef76d16ca02cf3dec189d4b4",
+  "objects": {
+    "demoMarketState": "0x95120424738ae3f9f159bfeafea4e6a11e462463b2b831255d1284e5c3606d12",
+    "riskPolicy": "0x81591e148e9a257bd175b696339eba97008fa0762b9132b6320dc1876dba8387",
+    "guardianCap": "0x21e7bf5b5989422f9a37c766735619a6c389cfbed879a795cc9ba91617ab4706",
+    "overrideCap": "0x72b45229d9481a87f5e82049b2a789b52dda4fcbb6cc4396e99cfb715cc2bf39",
+    "suiPerpsMarketState": "0x3cb057f7748fdffe2c92a817497b363cb6b9f1b660f844459779a3569c402e1e",
+    "usdcVaultMarketState": "0x3dcf15e5a6ebde9c93bec1b411c044d763dbef6d52aea06b4b36aa366ceb1caf"
+  },
+  "provisioningTx": {
+    "initMarket": "Htm3pspJu2CaReVZoFaUowkG1VwQYAkm95JXwNPi6w1h",
+    "createPolicy": "Cead6Wreo29hh4HRY3yB6gokfoUf81pMjYE7wGXeUvQS"
+  },
+  "autonomousActions": [
+    {
+      "digest": "GypsZ8GjXHvLtTmjCSN2HpuXBJPJSMkvCsUDGrkfYuVU",
+      "event": "policy::RiskActionExecuted",
+      "actionType": "reduce_max_ltv",
+      "riskScore": 87,
+      "newMaxLtvBps": 6500,
+      "walrusBlobId": "2PMM51awFAYran58Z--VEYgVlh3DqzqFmvioZUO_1fE"
+    },
+    {
+      "digest": "DtjRMRURXmb2Vn8zFJZamPUVDqfKbr8PdbTsZW7h1uBt",
+      "event": "policy::RiskActionExecuted",
+      "actionType": "reduce_max_ltv",
+      "riskScore": 83,
+      "walrusBlobId": "-WcIzS47ICdk6xCq25FfXgZDPTWBbH2m_Cl02sqrWEs"
+    },
+    {
+      "digest": "DpUem5sZujhbc9D5WUu3XgYHcv8sEAw54Psr9jieExpM",
+      "event": "policy::RiskActionExecuted",
+      "actionType": "reduce_max_ltv",
+      "riskScore": 79,
+      "walrusBlobId": "OGYjx6rc8VikSIhOEzZbYPJbiqBs7MUT5aNYoQQAzwQ"
+    },
+    {
+      "digest": "7CnUGMYX1YtBfPzEZH3qKaQ6P24aMsrmuy4tniix2ndC",
+      "event": "policy::RiskActionExecuted",
+      "actionType": "pause_new_borrows",
+      "riskScore": 35,
+      "walrusBlobId": "5Tw0tB3XnMAYL5Ugx7fFcC3TWDrU3J1auJ6FGkDqL_8"
+    }
+  ],
+  "daoOverrides": [
+    {
+      "digest": "Dm1oXPms782vKSmR9MiDhWMi67bE7ZNdeeufwAmjGtta",
+      "event": "policy::PolicyUpdated",
+      "operation": "update_thresholds",
+      "reason": "DAO retunes limits during simulated stress (live test)",
+      "walrusBlobId": "ARr5i5KyydW8O7B02pHzvEYIn0Aff3FWIkBbgfLphg8"
+    },
+    {
+      "digest": "Ep9Rk5Zc4bEQhQJ4qv1hoK5HsDHdgynck8dREYrsbkMw",
+      "event": "policy::PolicyUpdated",
+      "operation": "update_thresholds",
+      "reason": "DAO retunes policy bounds after volatility review",
+      "walrusBlobId": null
+    }
+  ],
+  "totals": {
+    "autonomousAgentActions": 36,
+    "daoOverrides": 3,
+    "distinctWalrusEvidenceBlobs": 15
+  },
+  "notes": "Walrus testnet blobs expire by storage epoch; entries with a null walrusBlobId had their evidence blob expire but the on-chain tx (which records the blob id + evidence hash in its ActionLog) remains permanently verifiable."
+}
