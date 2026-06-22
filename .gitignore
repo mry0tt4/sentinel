@@ -27,3 +27,6 @@ move/**/build/
 # Excluded from the public submission repo (per request)
 sentinel-explainer/
 /DEMO_SCRIPT.md
+
+# Kiro workspace (not part of the public repo)
+.kiro/
