@@ -24,6 +24,8 @@ its own limits — those paths abort unconditionally in Move.
 > the exact autonomous-action tx digest, Walrus evidence blob id, DAO override digest, and
 > "run these commands" reproduction steps.
 
+> 🎥 **Demo video:** https://www.youtube.com/watch?v=wjW0sVAG4bQ
+
 ---
 
 ## 60-second judging path

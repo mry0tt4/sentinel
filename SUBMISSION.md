@@ -211,11 +211,7 @@ curl -s https://aggregator.walrus-testnet.walrus.space/v1/blobs/2PMM51awFAYran58
 
 ## 8. Demo video
 
-90-second walkthrough (scenario start → score crosses threshold → Walrus blob →
+Watch the walkthrough (scenario start → score crosses threshold → Walrus blob →
 testnet PTB → on-chain action log → DAO override):
 
-<!-- TODO: paste the unlisted YouTube / Loom link here before submitting -->
-
-**Link:** _pending upload_
-
-Full page-by-page narration: see [`DEMO_SCRIPT.md`](./DEMO_SCRIPT.md).
+**▶ https://www.youtube.com/watch?v=wjW0sVAG4bQ**
