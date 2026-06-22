@@ -1,5 +1,7 @@
 # Sentinel — an autonomous circuit breaker for Sui lending markets
 
+![Sentinel bounded autonomy for Sui lending markets](./assets/sentinel-readme-hero-imagegen-v2.png)
+
 **Sentinel is an autonomous circuit breaker for Sui DeFi.** It watches a lending market in real
 time, scores its risk 0–100 with a deterministic engine, and — when a threshold is crossed —
 executes a **bounded** safety action on-chain in seconds (reduce max-LTV, pause new borrows, enter
