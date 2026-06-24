@@ -7,6 +7,9 @@ build/
 .astro/
 *.tsbuildinfo
 
+# Vercel local build output / project link (rebuilt from source by Vercel)
+.vercel/
+
 # Environment & secrets (Req 16.3 - never commit real secrets)
 .env
 .env.*

@@ -5,8 +5,8 @@ behind Caddy (free HTTPS). Frontend runs on Vercel and talks to the backend over
 
 **Your values (replace if different):**
 
-- VM public IP: `92.4.70.25`
-- Backend domain (you'll create this in Step 2): `sentinel-api.duckdns.org`
+- VM public IP: `80.225.243.198`
+- Backend domain: `sentinel-backend.duckdns.org`
 - SSH user on the VM: `ubuntu`
 
 > The files this guide uses already exist in the repo: `backend/Dockerfile`, `Caddyfile`,
@@ -35,7 +35,7 @@ In the Oracle Cloud web console:
 SSH into the VM first (use the key you downloaded when you created the instance):
 
 ```bash
-ssh -i /path/to/your-ssh-key.key ubuntu@92.4.70.25
+ssh -i /path/to/your-ssh-key.key ubuntu@80.225.243.198
 ```
 
 Then open the ports at the OS level (Oracle's Ubuntu image ships with strict iptables):
@@ -55,10 +55,10 @@ sudo netfilter-persistent save
 Caddy needs a real hostname to get a free HTTPS certificate.
 
 1. Go to **https://www.duckdns.org**, sign in (Google/GitHub).
-2. Type a subdomain, e.g. `sentinel-api`, click **add domain**.
-3. In the **current ip** box for that domain, enter `92.4.70.25` and click **update ip**.
+2. Type a subdomain, e.g. `sentinel-backend`, click **add domain**.
+3. In the **current ip** box for that domain, enter `80.225.243.198` and click **update ip**.
 
-✅ **Checkpoint (run on your laptop):** `ping sentinel-api.duckdns.org` resolves to `92.4.70.25`.
+✅ **Checkpoint (run on your laptop):** `ping sentinel-backend.duckdns.org` resolves to `80.225.243.198`.
 
 ---
 
@@ -88,7 +88,7 @@ cd sentinel
 ```
 
 > No GitHub? From your laptop you can copy it up instead (skips node_modules):
-> `rsync -av --exclude node_modules --exclude dist ./ ubuntu@92.4.70.25:~/sentinel/`
+> `rsync -av --exclude node_modules --exclude dist ./ ubuntu@80.225.243.198:~/sentinel/`
 
 ---
 
@@ -105,7 +105,7 @@ Paste this, then fill the two secret lines with the values from your **local** `
 
 ```dotenv
 # --- the domain Caddy will serve (matches Step 2) ---
-SENTINEL_DOMAIN=sentinel-api.duckdns.org
+SENTINEL_DOMAIN=sentinel-backend.duckdns.org
 
 # --- Sui Testnet ---
 SUI_RPC_URL=https://fullnode.testnet.sui.io:443
@@ -176,10 +176,10 @@ caddy all "running"/"healthy".
 Give Caddy ~30 seconds on first run to fetch the certificate, then from your laptop:
 
 ```bash
-curl https://sentinel-api.duckdns.org/health
+curl https://sentinel-backend.duckdns.org/health
 # -> {"status":"ok","service":"sentinel-backend","network":"sui:testnet",...}
 
-curl https://sentinel-api.duckdns.org/api/markets
+curl https://sentinel-backend.duckdns.org/api/markets
 # -> {"role":"DeFi User","markets":[ ... ]}
 ```
 
@@ -197,8 +197,8 @@ If `/health` works but `/api/markets` is empty, re-run the migrate + seed comman
 | Name                                     | Value                                                                |
 | ---------------------------------------- | -------------------------------------------------------------------- |
 | `PUBLIC_SUI_NETWORK`                     | `testnet`                                                            |
-| `PUBLIC_BACKEND_URL`                     | `https://sentinel-api.duckdns.org`                                   |
-| `PUBLIC_WS_URL`                          | `wss://sentinel-api.duckdns.org/ws`                                  |
+| `PUBLIC_BACKEND_URL`                     | `https://sentinel-backend.duckdns.org`                              |
+| `PUBLIC_WS_URL`                          | `wss://sentinel-backend.duckdns.org/ws`                             |
 | `PUBLIC_SENTINEL_POLICY_PACKAGE_ID`      | `0xacc43943d51e0bdf43f8a0ea471fd1bb8c4ecaab6df1b9c3a5cab5bbcbea82e7` |
 | `PUBLIC_SENTINEL_DEMO_MARKET_PACKAGE_ID` | `0xacc43943d51e0bdf43f8a0ea471fd1bb8c4ecaab6df1b9c3a5cab5bbcbea82e7` |
 | `PUBLIC_SENTINEL_ADAPTERS_PACKAGE_ID`    | `0xacc43943d51e0bdf43f8a0ea471fd1bb8c4ecaab6df1b9c3a5cab5bbcbea82e7` |

@@ -24,6 +24,7 @@ import type {
   TimelineSnapshotStep,
   TimelineStep,
 } from './incidentTypes';
+import { resolveBackendBaseUrl } from './backendConfig';
 
 /** Minimal response shape compatible with the Fetch API `Response`. */
 export interface BackendResponse {
@@ -259,7 +260,7 @@ export class IncidentApiClient implements IncidentDataClient {
 
 /** Build an {@link IncidentApiClient} from the global `fetch`, pointed at the backend. */
 export function createDefaultIncidentClient(): IncidentApiClient {
-  const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.PUBLIC_BACKEND_URL) || '';
+  const baseUrl = resolveBackendBaseUrl();
   const transport: BackendFetch = (url, init) =>
     fetch(url, init) as unknown as Promise<BackendResponse>;
   return new IncidentApiClient(transport, baseUrl);

@@ -9,6 +9,7 @@
 import { useEffect } from 'react';
 
 import type { ClientMessage, ServerMessage } from './dashboardTypes';
+import { resolveWsUrl } from './backendConfig';
 
 /** A listener invoked for every decoded server message. */
 export type RiskSocketListener = (message: ServerMessage) => void;
@@ -177,13 +178,7 @@ export function decodeServerMessage(data: unknown): ServerMessage | null {
 
 /** Resolve the dashboard WebSocket URL from env, with a sensible default. */
 export function defaultRiskSocketUrl(): string {
-  const fromEnv = typeof import.meta !== 'undefined' ? import.meta.env?.PUBLIC_WS_URL : undefined;
-  if (fromEnv) return fromEnv;
-  if (typeof window !== 'undefined' && window.location) {
-    const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    return `${proto}//${window.location.host}/ws`;
-  }
-  return 'ws://localhost:8080/ws';
+  return resolveWsUrl();
 }
 
 /**

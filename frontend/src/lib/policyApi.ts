@@ -7,6 +7,7 @@
 // record on success (Req 4.10).
 
 import type { PolicyDraftBody } from './policyWizard';
+import { resolveBackendBaseUrl } from './backendConfig';
 
 /** Minimal response shape compatible with the Fetch API `Response`. */
 export interface BackendResponse {
@@ -110,8 +111,7 @@ export class PolicyApiClient implements PolicyApi {
 
 /** Build a {@link PolicyApiClient} from the global `fetch`, pointed at the backend. */
 export function createDefaultPolicyApiClient(): PolicyApiClient {
-  const baseUrl =
-    (typeof import.meta !== 'undefined' && import.meta.env?.PUBLIC_BACKEND_URL) || '';
+  const baseUrl = resolveBackendBaseUrl();
   const transport: BackendFetch = (url, init) =>
     fetch(url, init) as unknown as Promise<BackendResponse>;
   return new PolicyApiClient(transport, baseUrl);

@@ -5,7 +5,7 @@
 # HTTPS/WSS via your SENTINEL_DOMAIN.
 #
 # Usage on the VM:
-#   export SENTINEL_DOMAIN=sentinel-api.duckdns.org   # your backend domain
+#   export SENTINEL_DOMAIN=sentinel-backend.duckdns.org   # your backend domain
 #   docker compose -f docker-compose.prod.yml up -d --build
 #   docker compose -f docker-compose.prod.yml exec backend node dist/db/migrate.js
 #   docker compose -f docker-compose.prod.yml exec backend node dist/db/seed.js

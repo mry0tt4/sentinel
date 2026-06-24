@@ -31,6 +31,7 @@ import type {
   MarketSummary,
   PolicyParams,
 } from './dashboardTypes';
+import { resolveBackendBaseUrl } from './backendConfig';
 
 export type { BackendResponse };
 
@@ -530,7 +531,7 @@ export class OverrideApiClient implements OverrideDataClient {
 
 /** Build an {@link OverrideApiClient} from the global `fetch`, pointed at the backend. */
 export function createDefaultOverrideClient(): OverrideApiClient {
-  const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.PUBLIC_BACKEND_URL) || '';
+  const baseUrl = resolveBackendBaseUrl();
   const transport: BackendFetch = (url, init) =>
     fetch(url, init as RequestInit) as unknown as Promise<BackendResponse>;
   return new OverrideApiClient(transport, baseUrl);

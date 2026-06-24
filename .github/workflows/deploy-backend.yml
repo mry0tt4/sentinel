@@ -1,0 +1,66 @@
+# Deploy the Sentinel backend to the Oracle VM.
+#
+# Runs ONLY when backend-relevant files change on `main` (the path filter below)
+# or when triggered manually. The frontend is deployed separately by Vercel's
+# Git integration, so it is intentionally absent here.
+#
+# How it works: SSH into the VM, fast-forward the checkout to the pushed commit,
+# then rebuild + restart the backend container via the prod compose file. The
+# VM's `.env` (secrets) is untracked, so the sync never touches it.
+#
+# Required GitHub repo secrets (Settings -> Secrets and variables -> Actions):
+#   ORACLE_HOST        public IP or hostname of the VM (e.g. 80.225.243.198)
+#   ORACLE_USER        SSH user (e.g. ubuntu)
+#   ORACLE_SSH_KEY     the PRIVATE SSH key (full contents) authorized on the VM
+# Optional:
+#   ORACLE_PORT        SSH port (defaults to 22)
+#   ORACLE_APP_DIR     repo path on the VM (defaults to ~/sentinel)
+
+name: Deploy Backend (Oracle)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'tsconfig.base.json'
+      - 'docker-compose.prod.yml'
+      - 'Caddyfile'
+      - '.github/workflows/deploy-backend.yml'
+  workflow_dispatch: {}
+
+# Never run two deploys at once; cancel an in-flight one if a newer push lands.
+concurrency:
+  group: deploy-backend
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.ORACLE_HOST }}
+          username: ${{ secrets.ORACLE_USER }}
+          key: ${{ secrets.ORACLE_SSH_KEY }}
+          port: ${{ secrets.ORACLE_PORT || 22 }}
+          script: |
+            set -euo pipefail
+            APP_DIR="${{ secrets.ORACLE_APP_DIR || '~/sentinel' }}"
+            cd "${APP_DIR/#\~/$HOME}"
+
+            echo "==> Syncing to origin/main"
+            git fetch --prune origin main
+            git checkout main
+            git reset --hard origin/main
+
+            echo "==> Rebuilding + restarting backend"
+            docker compose -f docker-compose.prod.yml up -d --build backend
+
+            echo "==> Pruning dangling images"
+            docker image prune -f
+
+            echo "==> Backend health"
+            sleep 5
+            docker compose -f docker-compose.prod.yml ps

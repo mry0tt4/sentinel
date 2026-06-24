@@ -4,6 +4,8 @@
 // deterministic Risk Engine, so the frontend just fetches and renders the
 // resulting score trajectory. Mirrors the backend `ReplayResult` DTO.
 
+import { resolveBackendBaseUrl } from './backendConfig';
+
 export interface ReplayPoint {
   t: string;
   price: number;
@@ -35,9 +37,7 @@ export interface ReplayResult {
 }
 
 function backendBaseUrl(): string {
-  const fromEnv =
-    typeof import.meta !== 'undefined' ? import.meta.env?.PUBLIC_BACKEND_URL : undefined;
-  return (fromEnv || '').replace(/\/$/, '');
+  return resolveBackendBaseUrl();
 }
 
 /** Fetch a real-event replay. Defaults to the primary event when `id` omitted. */

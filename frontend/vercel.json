@@ -1,0 +1,6 @@
+{
+  "framework": "astro",
+  "buildCommand": "astro build",
+  "installCommand": "npm install",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD -- ."
+}

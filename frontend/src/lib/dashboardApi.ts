@@ -17,6 +17,7 @@ import type {
   PolicyParams,
   RiskIndicators,
 } from './dashboardTypes';
+import { resolveBackendBaseUrl } from './backendConfig';
 
 /** Minimal response shape compatible with the Fetch API `Response`. */
 export interface BackendResponse {
@@ -226,7 +227,7 @@ export class DashboardApiClient implements DashboardDataClient {
 
 /** Build a {@link DashboardApiClient} from the global `fetch`, pointed at the backend. */
 export function createDefaultDashboardClient(): DashboardApiClient {
-  const baseUrl = (typeof import.meta !== 'undefined' && import.meta.env?.PUBLIC_BACKEND_URL) || '';
+  const baseUrl = resolveBackendBaseUrl();
   const transport: BackendFetch = (url, init) =>
     fetch(url, init) as unknown as Promise<BackendResponse>;
   return new DashboardApiClient(transport, baseUrl);

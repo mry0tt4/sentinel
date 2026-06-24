@@ -10,6 +10,7 @@
 //                                       actionLogId, record }` (Req 11.4, 14.4)
 
 import type { SimRunResult } from './simulatorTypes';
+import { resolveBackendBaseUrl } from './backendConfig';
 
 /** Minimal response shape compatible with the Fetch API `Response`. */
 export interface BackendResponse {
@@ -168,8 +169,7 @@ export class SimulatorApiClient implements SimulatorApi {
 
 /** Build a {@link SimulatorApiClient} from the global `fetch`, pointed at the backend. */
 export function createDefaultSimulatorApiClient(): SimulatorApiClient {
-  const baseUrl =
-    (typeof import.meta !== 'undefined' && import.meta.env?.PUBLIC_BACKEND_URL) || '';
+  const baseUrl = resolveBackendBaseUrl();
   const transport: BackendFetch = (url, init) =>
     fetch(url, init) as unknown as Promise<BackendResponse>;
   return new SimulatorApiClient(transport, baseUrl);
